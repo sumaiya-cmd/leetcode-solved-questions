@@ -6,40 +6,48 @@ using namespace std;
 class Solution {
   public:
     // Function to detect cycle in a directed graph.
-    
-    bool hasCycle( int c_vertex ,vector<int>adj[] , vector<bool>&visited , vector<bool>&recStack){
-        visited[c_vertex] =true ;
-        recStack[c_vertex] =true;
-        
-        vector<int>neighbours = adj[c_vertex] ;
-        
-        for(int neigh :neighbours ){
-            if(visited[neigh]==false && hasCycle(neigh , adj , visited, recStack))
-                return true ;
-            
-            else if(recStack[neigh]==true)
-                return true ;
-        }
-        
-        recStack[c_vertex]=false ;
-        
-        return false ;
-        
-        
-    }
-    
     bool isCyclic(int V, vector<int> adj[]) {
+        vector<int>inDegree(V , 0) ;
+        vector<bool>visited(V, false) ;
         
-        vector<bool>visited(V ,false);
-        vector<bool>recStack(V, false) ;
+        for(int c_vertex= 0;c_vertex<V ;c_vertex++){
+            for(int neigh:adj[c_vertex])
+                inDegree[neigh]++ ;
+        }
         
-        for(int currentVertex =0 ;currentVertex<V ;currentVertex++){
-            if(visited[currentVertex] ==false && hasCycle(currentVertex, adj , visited ,recStack))
+        queue<int>queue ;
+        
+        for(int c_vertex =0 ; c_vertex<V ; c_vertex++){
+            if(inDegree[c_vertex]==0)
+                queue.push(c_vertex) ;
+        }
+        
+        while(!queue.empty()){
+            
+            int c_vertex = queue.front();
+            queue.pop();
+            
+            if(visited[c_vertex]==true)
+                continue ;
+            
+            visited[c_vertex]=true ;
+            
+            vector<int>neighbours = adj[c_vertex] ;
+            
+            for(int neigh:neighbours){
+                inDegree[neigh]-=1 ;
+                
+                if(inDegree[neigh]==0)
+                    queue.push(neigh) ;
+            }
+        }
+        
+        for(int i =0 ;i<V ;i++){
+            if(visited[i]==false)
                 return true ;
         }
         
         return false ;
-        
     }
 };
 
