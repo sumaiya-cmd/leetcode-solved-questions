@@ -7,51 +7,45 @@ class Solution
 {
 	public:
 	//Function to return list containing vertices in Topological order. 
+	 bool hasCycle( int c_vertex ,vector<int>adj[] , vector<bool>&visited ,vector<int>&order, vector<bool>&recStack){
+        visited[c_vertex] =true ;
+        recStack[c_vertex] =true;
+        
+        
+        vector<int>neighbours = adj[c_vertex] ;
+        
+        for(int neigh :neighbours ){
+            if(visited[neigh]==false && hasCycle(neigh , adj , visited,order, recStack))
+                return true ;
+            
+            else if(recStack[neigh]==true)
+                return true ;
+        }
+        
+        recStack[c_vertex]=false ;
+        order.push_back(c_vertex) ;
+        
+        return false ;
+        
+        
+    }
+    
 	vector<int> topoSort(int V, vector<int> adj[]) 
 	{
-	    vector<int>inDegree(V , 0) ;
-        vector<bool>visited(V,false) ;
-        vector<int>ans ;
-        
-        for(int c_vertex= 0;c_vertex<V ;c_vertex++){
-            for(int neigh:adj[c_vertex])
-                inDegree[neigh]++ ;
-        }
-        
-        queue<int>queue ;
-        
-        for(int c_vertex =0 ; c_vertex<V ; c_vertex++){
-            if(inDegree[c_vertex]==0)
-                queue.push(c_vertex) ;
-        }
-        
-        while(!queue.empty()){
-            
-            int c_vertex = queue.front();
-            queue.pop();
-            
-            if(visited[c_vertex]==true)
-                continue ;
-            
-            ans.push_back(c_vertex) ;
-            visited[c_vertex]=true ;
-            
-            vector<int>neighbours = adj[c_vertex] ;
-            
-            for(int neigh:neighbours){
-                inDegree[neigh]-=1 ;
-                
-                if(inDegree[neigh]==0)
-                    queue.push(neigh) ;
-            }
-        }
-        
-        
-        // reverse(ans.begin(),ans.end());
-        
-        return ans ;
-    
+	    vector<int>order ;
+	    vector<bool>visited(V, false ) ;
+	    vector<bool>recStack(V, false ) ;
+	    
+	    for(int currentVertex =0 ;currentVertex<V; currentVertex++) {
+	        if(visited[currentVertex]==false && hasCycle( currentVertex ,adj , visited , order , recStack))
+	            return {};
+	    }
+	    
+	   // reverse(order.begin() ,order.end()) ;
+	    return order ;
 	}
+	
+
 };
 
 //{ Driver Code Starts.
