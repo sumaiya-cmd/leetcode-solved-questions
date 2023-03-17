@@ -10,47 +10,48 @@ using namespace std;
 class Solution{
     //Complete the function and return minimum number of operations
     public:
-    int solve(int st,int e,string s){
-      int i=0,j=s.size()-1;
-      int ans=0;
-      while(i<j){
-          if(s[i]==s[j]){
-              i++;
-              j--;
-          }
-          else if((i>=st&&j<=e)){
-            return -1;
-          }
-          else {
-              ans++;
-              i++;
-              j--;
-          }
-      }
-      return ans;
-    }
     int specialPalindrome(string s1, string s2){
         //Code Here
-        int ans=INT_MAX;
-        int n=s1.size();
-        int m=s2.size();
-        for(int i=0;i<=n-m;i++){
-            string s=s1;
-            int cnt=0;
-            for(int j=0;j<m;j++){
-                if(s[i+j]!=s2[j]){
-                   s[i+j]=s2[j];
-                   cnt++;
-                } 
+        int l1=s1.size();
+        int l2= s2.size();
+        
+        if(s1.size()==0 || s2.size()==0 || s2.size()> s1.size())
+            return -1;
+            
+        bool flag =false; 
+        int ans = INT_MAX; 
+        
+        for(int i=0;i<l1-l2+1 ;i++){
+            string temp = s1.substr(0,i)+s2+s1.substr(i+l2);
+            
+            int cost=0;
+            for(int j=i ;j<i+l2;j++){
+                if(temp[j]!=s1[j])
+                    cost++ ;
             }
-           // cout<<s<<" "<<cnt<<" ";
-            int x=solve(i,i+m-1,s);
-           // cout<<x<<" "<<endl;
-            if(x>=0){
-                ans=min(ans,x+cnt);
+            
+            flag=false; 
+            for(int j=0;j<l1/2 ;j++){
+                if((j<i || j>=i+l2 )&& temp[j]!=temp[l1-j-1])
+                    cost++;
+                
+                else if(l1-j-1 >=i+l2 && temp[j]!=temp[l1-j-1])
+                    cost++;
+                
+                else if(temp[j]!=temp[l1-j-1]){
+                    flag=true;
+                    break ;
+                }
             }
-        }
-        return ans==INT_MAX?-1:ans;
+            
+            if (!flag)
+                ans= min(ans, cost);   
+        }   
+        
+        if(ans==INT_MAX)
+            return -1 ;
+                
+         return  ans ;
     }
 };
 
