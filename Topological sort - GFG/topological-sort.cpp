@@ -7,45 +7,45 @@ class Solution
 {
 	public:
 	//Function to return list containing vertices in Topological order. 
-	 bool hasCycle( int c_vertex ,vector<int>adj[] , vector<bool>&visited ,vector<int>&order, vector<bool>&recStack){
-        visited[c_vertex] =true ;
-        recStack[c_vertex] =true;
-        
-        
-        vector<int>neighbours = adj[c_vertex] ;
-        
-        for(int neigh :neighbours ){
-            if(visited[neigh]==false && hasCycle(neigh , adj , visited,order, recStack))
-                return true ;
-            
-            else if(recStack[neigh]==true)
-                return true ;
-        }
-        
-        recStack[c_vertex]=false ;
-        order.push_back(c_vertex) ;
-        
-        return false ;
-        
-        
-    }
-    
 	vector<int> topoSort(int V, vector<int> adj[]) 
 	{
-	    vector<int>order ;
-	    vector<bool>visited(V, false ) ;
-	    vector<bool>recStack(V, false ) ;
+	    // code here
+	    vector<int>ans ;
+	    vector<int>inDegree(V);
 	    
-	    for(int currentVertex =0 ;currentVertex<V; currentVertex++) {
-	        if(visited[currentVertex]==false && hasCycle( currentVertex ,adj , visited , order , recStack))
-	            return {};
+	    queue<int>queue ;
+	    
+	    for(int node =0 ;node<V ;node++){
+	        for(auto dest:adj[node]){
+	            inDegree[dest]++ ;
+	        }
 	    }
 	    
-	   // reverse(order.begin() ,order.end()) ;
-	    return order ;
+	    for(int node=0;node<V ;node++ ){
+	        if(inDegree[node]==0){
+	            queue.push(node);
+	            ans.push_back(node) ;
+	        }
+	    }
+	        
+	   
+	    while(!queue.empty()){
+	        int c_vertex =queue.front() ;
+	        queue.pop() ;
+	        
+	        for(auto neigh:adj[c_vertex]){
+	            inDegree[neigh]--;
+	            
+	            if(inDegree[neigh]==0){
+	                queue.push(neigh);
+	                ans.push_back(neigh) ;
+	            }
+	        }
+	        
+	    }        
+	    
+	    return ans ;
 	}
-	
-
 };
 
 //{ Driver Code Starts.
